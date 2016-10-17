@@ -176,10 +176,10 @@ class TestAWSAuthConnection(unittest.TestCase):
         self.assertEqual(conn.proxy_port, 8180)
         del os.environ['http_proxy']
 
-    @mock.patch.object(socket, 'create_connection')
-    @mock.patch('boto.compat.http_client.HTTPResponse')
-    @mock.patch('boto.compat.http_client.ssl')
-    @mock.patch('socket.socket')
+    @mock.patch.object(socket, 'create_connection', autospec=True)
+    @mock.patch('boto.compat.http_client.HTTPResponse', autospec=True)
+    @mock.patch('boto.compat.http_client.ssl', autospec=True)
+    @mock.patch('socket.socket', autospec=True)
     def test_proxy_ssl(self, socket_mock, ssl_mock, http_response_mock,
                        create_connection_mock):
         type(http_response_mock.return_value).status = mock.PropertyMock(
@@ -205,10 +205,10 @@ class TestAWSAuthConnection(unittest.TestCase):
             mock.call.sendall(b'\r\n')
         ])
 
-    @mock.patch.object(socket, 'create_connection')
-    @mock.patch('boto.compat.http_client.HTTPResponse')
-    @mock.patch('boto.compat.http_client.ssl')
-    @mock.patch('socket.socket')
+    @mock.patch.object(socket, 'create_connection', autospec=True)
+    @mock.patch('boto.compat.http_client.HTTPResponse', autospec=True)
+    @mock.patch('boto.compat.http_client.ssl', autospec=True)
+    @mock.patch('socket.socket', autospec=True)
     def test_proxy_ssl_with_authentication(self, socket_mock, ssl_mock, http_response_mock,
                        create_connection_mock):
         type(http_response_mock.return_value).status = mock.PropertyMock(

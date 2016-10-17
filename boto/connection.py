@@ -804,7 +804,11 @@ class AWSAuthConnection(object):
                 sock.sendall(b"\r\n")
         else:
             sock.sendall(b"\r\n")
-        resp = http_client.HTTPResponse(sock, strict=True, debuglevel=self.debug)
+
+        if (sys.version_info) < (3, 4):
+            resp = http_client.HTTPResponse(sock, strict=True, debuglevel=self.debug)
+        else:
+            resp = http_client.HTTPResponse(sock, debuglevel=self.debug)
         resp.begin()
 
         if resp.status != 200:
