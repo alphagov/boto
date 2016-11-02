@@ -167,8 +167,8 @@ def migrate_instances(autoscale, name):
     old_instances_count = len(old_instances)
     ec2 = boto.connect_ec2()
     for old_instance in old_instances:
-        print "Terminating instance " + old_instance.instance_id
-        autoscale.terminate_instance(old_instance.instance_id, False)
+        print "Detaching instance " + old_instance.instance_id
+        autoscale.detach_instances(name, [old_instance.instance_id], False)
         while True:
             g = get_group(autoscale, name)
             new_instances = g.instances
@@ -177,7 +177,7 @@ def migrate_instances(autoscale, name):
                 instancesReady = True
                 if(old_instance.instance_id == new_instance.instance_id):
                     hasOldInstance = True
-                    print "Waiting for old instance to shut down..."
+                    print "Waiting for old instance to be detached..."
                     break
                 elif(new_instance.lifecycle_state != 'InService'):
                     instancesReady = False
@@ -188,6 +188,8 @@ def migrate_instances(autoscale, name):
                 print "Waiting for new instance to be created..."
 
             if(not hasOldInstance and instancesReady):
+                print "Terminating instance " + old_instance.instance_id
+                ec2.terminate_instances([old_instance.instance_id])
                 break
             else:
                 time.sleep(20)
